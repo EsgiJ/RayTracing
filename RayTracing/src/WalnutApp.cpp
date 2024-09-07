@@ -6,6 +6,7 @@
 #include "Walnut/Image.h"
 #include "Walnut/Timer.h"
 
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace Walnut;
 
@@ -13,7 +14,24 @@ class ExampleLayer : public Walnut::Layer
 {
 public:
 	ExampleLayer()
-		: m_Camera(45.0f, 0.1f, 100.0f){}
+		: m_Camera(45.0f, 0.1f, 100.0f)
+	{
+		{
+			Sphere sphere;
+			sphere.Position = { 0.0f, 0.0f, 0.0f };
+			sphere.Radius = 1.0f;
+			sphere.Albedo = { 1.0f, 0.0f, 1.0f };
+			m_Scene.Spheres.push_back(sphere);
+		}
+
+		{
+			Sphere sphere;
+			sphere.Position = { 2.0f, 0.0f, 0.0f };
+			sphere.Radius = 1.5f;
+			sphere.Albedo = { 0.2f, 0.3f, 1.0f };
+			m_Scene.Spheres.push_back(sphere);
+		}
+	}
 
 	virtual void OnUpdate(float ts) override
 	{
@@ -26,6 +44,21 @@ public:
 		if(ImGui::Button("Render"))
 		{
 			Render();
+		}
+		ImGui::End();
+
+		ImGui::Begin("Scene");
+		for (size_t i = 0; i < m_Scene.Spheres.size(); i++)
+		{
+			Sphere& sphere = m_Scene.Spheres[i];
+			ImGui::PushID(i);
+
+			ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
+			ImGui::DragFloat("Radius", &sphere.Radius, 0.1f);
+			ImGui::ColorEdit3("Albedo", glm::value_ptr(sphere.Albedo));
+
+			ImGui::Separator();
+			ImGui::PopID();
 		}
 		ImGui::End();
 
@@ -53,11 +86,12 @@ public:
 		Timer timer;
 		m_Renderer.OnResize(m_ViewportWidth, m_ViewportHeight);
 		m_Camera.OnResize(m_ViewportWidth, m_ViewportHeight);
-		m_Renderer.Render(m_Camera);
+		m_Renderer.Render(m_Scene, m_Camera);
 
 		m_LastRenderTime = timer.ElapsedMillis();
 	}
 private:
+	Scene m_Scene;
 	Camera m_Camera;
 	Renderer m_Renderer;
 	uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
