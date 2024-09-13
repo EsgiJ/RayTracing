@@ -24,11 +24,25 @@ public:
 		blueMaterial.Albedo = { 0.2f, 0.3f, 1.0f };
 		blueMaterial.Roughness = 0.1f;
 
+		Material& emissiveSphere = m_Scene.Materials.emplace_back();
+		emissiveSphere.Albedo = { 0.8f, 0.5f, 0.2f };
+		emissiveSphere.Roughness = 0.5f;
+		emissiveSphere.EmissionColor = emissiveSphere.Albedo;
+		emissiveSphere.EmissivePower = 10.0f;
+
 		{
 			Sphere sphere;
 			sphere.Position = { 0.0f, 0.0f, 0.0f };
 			sphere.Radius = 1.0f;
 			sphere.MaterialIndex = 0;
+			m_Scene.Spheres.push_back(sphere);
+		}
+
+		{
+			Sphere sphere;
+			sphere.Position = { 2.0f, 0.0f, 0.0f };
+			sphere.Radius = 1.0f;
+			sphere.MaterialIndex = 2;
 			m_Scene.Spheres.push_back(sphere);
 		}
 
@@ -87,6 +101,10 @@ public:
 			ImGui::ColorEdit3("Albedo", glm::value_ptr(material.Albedo));
 			ImGui::DragFloat("Roughness", &material.Roughness, 0.05f, 0.0f, 1.0f);
 			ImGui::DragFloat("Metallic", &material.Metallic, 0.05f, 0.0f, 1.0f);
+			ImGui::ColorEdit3("Emission Color", glm::value_ptr(material.EmissionColor));
+			ImGui::DragFloat("Emission Power", &material.EmissivePower, 0.05f, 0.0f, FLT_MAX);
+
+
 
 			ImGui::Separator();
 			ImGui::PopID();
