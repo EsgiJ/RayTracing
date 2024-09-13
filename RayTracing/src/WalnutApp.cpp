@@ -18,7 +18,7 @@ public:
 	{
 		Material& pinkMaterial = m_Scene.Materials.emplace_back();
 		pinkMaterial.Albedo = { 1.0f, 0.0f, 1.0f };
-		pinkMaterial.Roughness = 0.0f;
+		pinkMaterial.Roughness = 0.5f;
 
 		Material& blueMaterial = m_Scene.Materials.emplace_back();
 		blueMaterial.Albedo = { 0.2f, 0.3f, 1.0f };
